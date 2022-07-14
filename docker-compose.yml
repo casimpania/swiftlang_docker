@@ -7,9 +7,15 @@ x-services-volume: &services-volume
 
 services:
   swift:
+    # Fix `swift repl` issue:
+    # https://github.com/docker/compose/issues/123
+    # https://hevawu.github.io/blog/2021/07/25/Swift-Server-Docker-failed-to-launch-REPL-process-'A'
+    privileged: true
     build:
        context: .
        dockerfile: "./docker/swift/Dockerfile"
+       args:
+         - seccomp:unconfined
     image: ${PROJECT_NAME}_playground:${ENVIRONMENT}-${ENVIRONMENT_VERSION}
     container_name: ${PROJECT_NAME}_playground
     volumes:
